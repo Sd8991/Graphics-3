@@ -22,6 +22,7 @@ class Game
 	RenderTarget target;					// intermediate render target
 	ScreenQuad quad;						// screen filling quad for post processing
 	bool useRenderTarget = true;
+        float x = 0, y = -4, z = -15;
 
 	// initialize
 	public void Init()
@@ -57,17 +58,26 @@ class Game
 		float frameDuration = timer.ElapsedMilliseconds;
 		timer.Reset();
 		timer.Start();
-	
-		// prepare matrix for vertex shader
-		Matrix4 transform = Matrix4.CreateFromAxisAngle( new Vector3( 0, 1, 0 ), a );
-		transform *= Matrix4.CreateTranslation( 0, -4, -15 );
+
+            // prepare matrix for vertex shader
+            var keyboard = OpenTK.Input.Keyboard.GetState();
+            if (keyboard[OpenTK.Input.Key.D]) x -= 0.1f;
+            if (keyboard[OpenTK.Input.Key.A]) x += 0.1f;
+            if (keyboard[OpenTK.Input.Key.W]) z += 0.1f;
+            if (keyboard[OpenTK.Input.Key.S]) z -= 0.1f;
+            if (keyboard[OpenTK.Input.Key.Space]) y -= 0.1f;
+            if (keyboard[OpenTK.Input.Key.ShiftLeft]) y += 0.1f;
+
+
+            Matrix4 transform = Matrix4.CreateFromAxisAngle( new Vector3( 0, 1, 0 ), a );
+		transform *= Matrix4.CreateTranslation( x, y, z );
 		transform *= Matrix4.CreatePerspectiveFieldOfView( 1.2f, 1.3f, .1f, 1000 );
 
-		// update rotation
-		a += 0.001f * frameDuration; 
-		if (a > 2 * PI) a -= 2 * PI;
+            // update rotation
+            a += 0.001f * frameDuration;
+            if (a > 2 * PI) a -= 2 * PI;
 
-		if (useRenderTarget)
+            if (useRenderTarget)
 		{
 			// enable render target
 			target.Bind();

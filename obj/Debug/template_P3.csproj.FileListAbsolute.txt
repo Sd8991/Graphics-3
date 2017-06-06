@@ -1,0 +1,7 @@
+C:\Users\sjors\OneDrive\Documents\GraphicsP3\bin\Debug\template_P3.exe.config
+C:\Users\sjors\OneDrive\Documents\GraphicsP3\bin\Debug\template_P3.exe
+C:\Users\sjors\OneDrive\Documents\GraphicsP3\bin\Debug\template_P3.pdb
+C:\Users\sjors\OneDrive\Documents\GraphicsP3\bin\Debug\OpenTK.dll
+C:\Users\sjors\OneDrive\Documents\GraphicsP3\obj\Debug\template_P3.csprojResolveAssemblyReference.cache
+C:\Users\sjors\OneDrive\Documents\GraphicsP3\obj\Debug\template_P3.exe
+C:\Users\sjors\OneDrive\Documents\GraphicsP3\obj\Debug\template_P3.pdb
