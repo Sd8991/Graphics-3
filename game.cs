@@ -22,7 +22,7 @@ class Game
 	RenderTarget target;					// intermediate render target
 	ScreenQuad quad;						// screen filling quad for post processing
 	bool useRenderTarget = true;
-        float x = 0, y = -4, z = -15;
+        float x = 0, y = -4, z = -15, b = 0;
 
 	// initialize
 	public void Init()
@@ -42,7 +42,12 @@ class Game
 		// create the render target
 		target = new RenderTarget( screen.width, screen.height );
 		quad = new ScreenQuad();
-   	}
+        // set the light 
+        int lightID = GL.GetUniformLocation(shader.programID, "lightPos");
+            GL.UseProgram(shader.programID);
+            GL.Uniform3(lightID, 10.0f, 10.0f, 10.0f);
+        Vector4 ambientColor =  new Vector4(200,200,200,1);
+        }
 
 	// tick for background surface
 	public void Tick()
@@ -67,11 +72,17 @@ class Game
             if (keyboard[OpenTK.Input.Key.S]) z -= 0.1f;
             if (keyboard[OpenTK.Input.Key.Space]) y -= 0.1f;
             if (keyboard[OpenTK.Input.Key.ShiftLeft]) y += 0.1f;
+            if (keyboard[OpenTK.Input.Key.Left]) b -= 0.015f;
+            if (keyboard[OpenTK.Input.Key.Right]) b += 0.015f;
 
 
             Matrix4 transform = Matrix4.CreateFromAxisAngle( new Vector3( 0, 1, 0 ), a );
-		transform *= Matrix4.CreateTranslation( x, y, z );
-		transform *= Matrix4.CreatePerspectiveFieldOfView( 1.2f, 1.3f, .1f, 1000 );
+
+            transform *= Matrix4.CreateTranslation( x, y, z );
+            transform *= Matrix4.CreateRotationY(b);
+            transform *= Matrix4.CreatePerspectiveFieldOfView( 1.2f, 1.3f, .1f, 1000 );
+            Matrix4 toWorld = transform;
+
 
             // update rotation
             a += 0.001f * frameDuration;
@@ -83,8 +94,8 @@ class Game
 			target.Bind();
 
 			// render scene to render target
-			mesh.Render( shader, transform, wood );
-			floor.Render( shader, transform, wood );
+			mesh.Render( shader, transform, toWorld, wood );
+			floor.Render( shader, transform, toWorld, wood );
 
 			// render quad
 			target.Unbind();
@@ -93,8 +104,8 @@ class Game
 		else
 		{
 			// render scene directly to the screen
-			mesh.Render( shader, transform, wood );
-			floor.Render( shader, transform, wood );
+			mesh.Render( shader, transform, toWorld, wood );
+			floor.Render( shader, transform, toWorld, wood );
 		}
 	}
 }
