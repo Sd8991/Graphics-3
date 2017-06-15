@@ -44,8 +44,11 @@ class Game
 		quad = new ScreenQuad();
         // set the light 
         int lightID = GL.GetUniformLocation(shader.programID, "lightPos");
+            int lightID2 = GL.GetUniformLocation(shader.programID, "lightPos2");
             GL.UseProgram(shader.programID);
             GL.Uniform3(lightID, 10.0f, 10.0f, 10.0f);
+            GL.Uniform3(lightID2, 10.0f, 10.0f, 10.0f);
+
         Vector4 ambientColor =  new Vector4(200,200,200,1);
         }
 
