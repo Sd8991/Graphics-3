@@ -27,6 +27,7 @@ class Game
 	// initialize
 	public void Init()
 	{
+            Vector3[] lightArray = new Vector3[] { new Vector3(0, 10, 0)};
 		// load teapot
 		mesh = new Mesh( "../../assets/teapot.obj" );
 		floor = new Mesh( "../../assets/floor.obj" );
@@ -42,14 +43,16 @@ class Game
 		// create the render target
 		target = new RenderTarget( screen.width, screen.height );
 		quad = new ScreenQuad();
-        // set the light 
-        int lightID = GL.GetUniformLocation(shader.programID, "lightPos");
+            // set the light 
+            int lightID = GL.GetUniformLocation(shader.programID, "lightPos");
             int lightID2 = GL.GetUniformLocation(shader.programID, "lightPos2");
+            int lightID3 = GL.GetUniformLocation(shader.programID, "lightPos3");
             GL.UseProgram(shader.programID);
-            GL.Uniform3(lightID, 10.0f, 10.0f, 10.0f);
-            GL.Uniform3(lightID2, 10.0f, 10.0f, 10.0f);
+            GL.Uniform3(lightID, new Vector3(20, 0, 0));
+            GL.Uniform3(lightID2, new Vector3(-10, 0, 0));
+            GL.Uniform3(lightID3, new Vector3(0, 0, 0));
 
-        Vector4 ambientColor =  new Vector4(200,200,200,1);
+            //Vector4 ambientColor =  new Vector4(200,200,200,1);
         }
 
 	// tick for background surface
@@ -62,8 +65,8 @@ class Game
 	// tick for OpenGL rendering code
 	public void RenderGL()
 	{
-		// measure frame duration
-		float frameDuration = timer.ElapsedMilliseconds;
+            // measure frame duration
+            float frameDuration = timer.ElapsedMilliseconds;
 		timer.Reset();
 		timer.Start();
 
@@ -80,7 +83,6 @@ class Game
 
 
             Matrix4 transform = Matrix4.CreateFromAxisAngle( new Vector3( 0, 1, 0 ), a );
-
             transform *= Matrix4.CreateTranslation( x, y, z );
             transform *= Matrix4.CreateRotationY(b);
             transform *= Matrix4.CreatePerspectiveFieldOfView( 1.2f, 1.3f, .1f, 1000 );

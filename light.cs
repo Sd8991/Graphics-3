@@ -7,5 +7,7 @@ namespace template_P3
 {
     class light
     {
+        Vector3 lightPosition;
+        Vector3 lightColor;
     }
 }
