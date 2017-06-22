@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using OpenTK;
 using OpenTK.Graphics;
@@ -18,6 +19,7 @@ class Game
 	float a = 0;                            // teapot rotation angle
         Camera c;
 	Stopwatch timer;                        // timer for measuring frame duration
+        SceneGraph scenegraph;
 	Shader shader;							// shader to use for rendering
 	Shader postproc;						// shader to use for post processing
 	Texture wood;                           // texture to use for rendering
@@ -27,14 +29,21 @@ class Game
 	bool useRenderTarget = true;
         float d = 0,  b = 0;
 
-	// initialize
-	public void Init()
+
+        // initialize
+        public void Init()
 	{
             c = new Camera(new Vector3(0, -4, -15), new Vector3(0, 0, 1));
 		// load teapot
-		mesh = new Mesh( "../../assets/teapot.obj" );
-		floor = new Mesh( "../../assets/floor.obj" );
-            teacup = new Mesh("../../assets/Cup.obj");
+		mesh = new Mesh( "../../assets/teapot.obj", 1 , 0/*, move matrix*/ );
+		floor = new Mesh( "../../assets/floor.obj", 0, -1 );
+            teacup = new Mesh("../../assets/Cup.obj", 2, 1);
+
+            List<Mesh> meshes = new List<Mesh>();
+            meshes.Add(mesh);
+            meshes.Add(floor);
+            meshes.Add(teacup);
+            scenegraph = new SceneGraph(meshes);
 		// initialize stopwatch
 		timer = new Stopwatch();
 		timer.Reset();
@@ -51,13 +60,10 @@ class Game
             // set the light
             int ambientColor = GL.GetUniformLocation(shader.programID, "ambientColor");
             Light L = new Light(new Vector3(20, 0, 0), new Vector3(1, 1, 0.5f), "lightPos", "lightCol", shader, true);
-            Light L2 = new Light(new Vector3(-10, 0, 0), new Vector3(10, 0, 0), "lightPos2", "lightCol2", shader, false);
-            Light L3 = new Light(new Vector3(0, 0, 0), new Vector3(0, 10, 0), "lightPos3", "lightCol3", shader, false);
-            Light L4 = new Light(new Vector3(0, 10, 0), new Vector3(10, 10, 10), "lightPos4", "lightCol4", shader, false);
+            Light L2 = new Light(new Vector3(-3, 0, 0), new Vector3(1, 0, 0), "lightPos2", "lightCol2", shader, false);
+            Light L3 = new Light(new Vector3(0, 0, 0), new Vector3(0, 1, 0), "lightPos3", "lightCol3", shader, false);
+            Light L4 = new Light(new Vector3(0, 10, 0), new Vector3(1, 1, 1), "lightPos4", "lightCol4", shader, false);
 
-            /*int lightID = GL.GetUniformLocation(shader.programID, "lightPos");
-            int lightID2 = GL.GetUniformLocation(shader.programID, "lightPos2");
-            int lightID3 = GL.GetUniformLocation(shader.programID, "lightPos3");*/
             GL.UseProgram(shader.programID);
             GL.Uniform3(ambientColor, new Vector3(0.1f, 0.1f, 0.1f));
             GL.Uniform3(L.lightIDp, L.lightPosition);
@@ -68,10 +74,6 @@ class Game
             GL.Uniform3(L3.lightIDc, L3.lightColor);
             GL.Uniform3(L4.lightIDp, L4.lightPosition);
             GL.Uniform3(L4.lightIDc, L4.lightColor);
-            /*GL.Uniform3(lightID, new Vector3(20, 0, 0));
-            GL.Uniform3(lightID2, new Vector3(-10, 0, 0));
-            GL.Uniform3(lightID3, new Vector3(0, 0, 0));    */
-
         }
 
 	// tick for background surface
@@ -103,14 +105,20 @@ class Game
             if (keyboard[OpenTK.Input.Key.Up]) d -= 0.015f;
             if (keyboard[OpenTK.Input.Key.Down]) d += 0.015f;
 
-            Vector3 durp = (c.cameraDir / (float)Math.Cos(b)).Normalized();
+
+
+
+
+
+            //Vector3 durp = (c.cameraDir / (float)Math.Cos(b)).Normalized();
             Matrix4 transform = Matrix4.CreateFromAxisAngle( new Vector3( 0, 1, 0 ), a );
             transform *= Matrix4.CreateFromAxisAngle(new Vector3(0, 1, 0), b);
-            transform *= Matrix4.CreateTranslation(c.cameraPos + durp);
-            /*transform *= Matrix4.CreateRotationY(b);
-            transform *= Matrix4.CreateRotationX(d);*/
+            transform *= Matrix4.CreateTranslation(c.cameraPos);
+            transform *= Matrix4.CreateRotationY(b);
+            transform *= Matrix4.CreateRotationX(d);
             transform *= Matrix4.CreatePerspectiveFieldOfView( 1.2f, 1.3f, .1f, 1000 );
             Matrix4 toWorld = transform;
+
 
 
 
@@ -126,7 +134,7 @@ class Game
 			// render scene to render target
 			mesh.Render( shader, transform, toWorld, wood );
 			floor.Render( shader, transform, toWorld, wood );
-                //teacup.Render(shader, transform, toWorld, porcelain);
+                teacup.Render(shader, transform, toWorld, porcelain);
 
 			// render quad
 			target.Unbind();
@@ -137,7 +145,7 @@ class Game
 			// render scene directly to the screen
 			mesh.Render( shader, transform, toWorld, wood );
 			floor.Render( shader, transform, toWorld, wood );
-                //teacup.Render(shader, transform, toWorld, porcelain);
+                teacup.Render(shader, transform, toWorld, porcelain);
             }
 	}
 }

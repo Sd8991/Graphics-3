@@ -14,6 +14,7 @@ namespace Template_P3
         Shader shader;
         public int lightIDp;
         public int lightIDc;
+        public bool on;
 
         public Light(Vector3 lightPosition2, Vector3 lightColor2, string name2, string colorname2, Shader s, bool on)
         {
