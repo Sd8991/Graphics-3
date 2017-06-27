@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace Template_P3 {
+namespace Template_P3{
 
 // mesh and loader based on work by JTalton; http://www.opentk.com/node/642
 
@@ -14,18 +14,23 @@ public class Mesh
 	public ObjTriangle[] triangles;			// triangles (3 vertex indices)
 	public ObjQuad[] quads;					// quads (4 vertex indices)
     public int indeks;
-        public int parentIndeks;
+    public int parentIndeks;
+    public Texture teksture;
+    public Matrix4 transform;
 	int vertexBufferId;						// vertex buffer
 	int triangleBufferId;					// triangle buffer
 	int quadBufferId;						// quad buffer
 
 	// constructor
-	public Mesh( string fileName, int index, int parentIndex)
+	public Mesh( string fileName, int index, int parentIndex, Vector3 transform2, Texture texture)
 	{
 		MeshLoader loader = new MeshLoader();
-		loader.Load( this, fileName );
-            parentIndeks = parentIndex;
-            indeks = index;
+		loader.Load( this, fileName );                       
+        transform = Matrix4.CreateTranslation(transform2);
+        indeks = index;
+        parentIndeks = parentIndex;
+        teksture = texture;
+
 	}
 
 	// initialization; called during first render
