@@ -13,9 +13,9 @@ public class Mesh
 	public ObjVertex[] vertices;			// vertex positions, model space
 	public ObjTriangle[] triangles;			// triangles (3 vertex indices)
 	public ObjQuad[] quads;					// quads (4 vertex indices)
-    public int indeks;
-    public int parentIndeks;
-    public Texture teksture;
+    public int indeks;                      // index
+    public int parentIndeks;                // index of the mesh's parent
+    public Texture teksture;                // texture
     public Matrix4 transform;
 	int vertexBufferId;						// vertex buffer
 	int triangleBufferId;					// triangle buffer

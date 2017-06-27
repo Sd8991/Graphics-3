@@ -63,7 +63,7 @@ namespace Template_P3
 		        quad = new ScreenQuad();
                 // setting up the SceneGraph
                 scenegraph = new SceneGraph(meshes);
-                // set the light
+                // set the lights
                 int ambientColor = GL.GetUniformLocation(shader.programID, "ambientColor");
                 Light L = new Light(new Vector3(20, 0, 0), new Vector3(1, 1, 0.5f), "lightPos", "lightCol", shader, true);
                 Light L2 = new Light(new Vector3(-3, 0, 0), new Vector3(1, 0, 0), "lightPos2", "lightCol2", shader, false);
@@ -92,7 +92,6 @@ namespace Template_P3
 	    // tick for OpenGL rendering code
 	    public void RenderGL()
 	    {
-                //scenegraph.Render(timer, c);
                 // measure frame duration
                 float frameDuration = timer.ElapsedMilliseconds;
                 timer.Reset();
@@ -115,7 +114,6 @@ namespace Template_P3
                 if (keyboard[OpenTK.Input.Key.Up]) d -= 0.015f;
                 if (keyboard[OpenTK.Input.Key.Down]) d += 0.015f;
 
-                //Vector3 durp = (c.cameraDir / (float)Math.Cos(b)).Normalized();
                 Matrix4 transform = Matrix4.CreateFromAxisAngle(new Vector3(0, 1, 0), a);
                 transform *= Matrix4.CreateTranslation(c.cameraPos);
                 transform *= Matrix4.CreateRotationY(b);
