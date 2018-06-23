@@ -14,18 +14,17 @@ namespace Template_P3
         Shader shader;
         public int lightIDp;
         public int lightIDc;
-        public bool on;
 
-        public Light(Vector3 lightPosition2, Vector3 lightColor2, string name2, string colorname2, Shader s, bool on)
+        public Light(Vector3 lightPosition, Vector3 lightColor, string name, string colorname, int index, Shader s, bool on)
         {
-            lightPosition = lightPosition2;
-            lightColor = lightColor2;
+            this.lightPosition = lightPosition;
+            this.lightColor = lightColor;
             if (!on) lightColor = Vector3.Zero;
-            name = name2;
-            colorname = colorname2;
+            this.name = name;
+            this.colorname = colorname;
             shader = s;
-            lightIDp = GL.GetUniformLocation(shader.programID, name);
-            lightIDc = GL.GetUniformLocation(shader.programID, colorname);
+            lightIDp = GL.GetUniformLocation(shader.programID, name + '[' + index + ']');
+            lightIDc = GL.GetUniformLocation(shader.programID, colorname + '[' + index + ']');
         }
     }
 }
