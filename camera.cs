@@ -3,6 +3,7 @@ using OpenTK;
 using OpenTK.Input;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
+using System;
 
 namespace Template_P3
 {
@@ -10,6 +11,8 @@ namespace Template_P3
     {
         public Vector3 cameraPos; //camera position
         public Vector3 cameraDir; //camera direction
+        public Vector3 up;
+        public Vector3 right;
         public float hRotate = 0;
         public float vRotate = 0;
 
@@ -17,6 +20,9 @@ namespace Template_P3
         {
             this.cameraPos = cameraPos;
             this.cameraDir = cameraDir;
+            up = new Vector3(0, 1, 0);
+            right = Vector3.Cross(up, cameraDir).Normalized();
+            up = Vector3.Cross(cameraDir, right);
         }
 
         public void ExecuteCommand()
@@ -24,6 +30,7 @@ namespace Template_P3
             Move();
             Rotate();
             Tilt();
+            CalcVectors();
         }
 
         public void Move()
@@ -39,14 +46,22 @@ namespace Template_P3
 
         public void Rotate()
         {
-            if (Keyboard.GetState().IsKeyDown(Key.Left)) hRotate -= 0.015f;
-            if (Keyboard.GetState().IsKeyDown(Key.Right)) hRotate += 0.015f;
+            if (Keyboard.GetState().IsKeyDown(Key.Left)) cameraDir += (cameraDir + 0.9f * right).Normalized();
+            if (Keyboard.GetState().IsKeyDown(Key.Right)) cameraDir += (cameraDir + 0.9f * -right).Normalized();
         }
 
         public void Tilt()
         {
-            if (Keyboard.GetState().IsKeyDown(Key.Up)) vRotate -= 0.015f;
-            if (Keyboard.GetState().IsKeyDown(Key.Down)) vRotate += 0.015f;
+            //if (Keyboard.GetState().IsKeyDown(Key.Up)) b += 0.1f;
+            //if (Keyboard.GetState().IsKeyDown(Key.Down)) b -= 0.1f;
+        }
+
+        public void CalcVectors()
+        {   
+
+            up = new Vector3(0, 1, 0);
+            right = Vector3.Cross(up, cameraDir);
+            up = Vector3.Cross(cameraDir, right);
         }
     }
 }
