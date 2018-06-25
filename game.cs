@@ -49,7 +49,7 @@ namespace Template_P3
             wood = new Texture("../../assets/wood.jpg");
             porcelain = new Texture("../../assets/porcelain_texture.jpg");
 
-            c = new Camera(new Vector3(0, -4, -30), new Vector3(0, 0, 1));
+            c = new Camera(new Vector3(0, 0, 0), new Vector3(0, 0, 1));
 
             // load teapot
             floor = new Mesh("../../assets/floor.obj");
@@ -122,7 +122,10 @@ namespace Template_P3
 
             Matrix4 transform = Matrix4.CreateFromAxisAngle(new Vector3(0, 1, 0), a);
             Matrix4 toWorld = transform;
-            transform *= Matrix4.CreateTranslation(0, -4, -15) * Matrix4.CreateTranslation(c.cameraPos);
+            transform *= Matrix4.CreateTranslation(c.cameraPos) * Matrix4.CreateTranslation(0, -4, -15);
+            transform *= Matrix4.CreateFromAxisAngle(new Vector3(0, 1, 0), c.hRotate);
+            transform *= Matrix4.CreateFromAxisAngle(new Vector3(1, 0, 0), c.vRotate);
+            transform *= Matrix4.CreateFromAxisAngle(new Vector3(0, 0, 1), c.zRotate);
             transform *= Matrix4.CreatePerspectiveFieldOfView(1.2f, 1.3f, .1f, 1000);
 
             // update rotation
