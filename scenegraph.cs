@@ -12,60 +12,36 @@ namespace Template_P3
 {
     class SceneGraph
     {
-        Texture wood = new Texture("../../assets/wood.jpg");
-        bool useRenderTarget = true;
-        public Dictionary<int, int> Hierarchy;
-        public Dictionary<int, Matrix4> Transforms;
-        const float PI = 3.1415926535f;         // PI
-        public SceneGraph(Dictionary<string, Mesh> meshes)
+        SceneGraph nodeParent;
+        public Mesh nodeMesh;
+        Texture nodeTexture;
+        public List<SceneGraph> nodeChildren = new List<SceneGraph>();
+           
+        public SceneGraph(SceneGraph p, Mesh mesh, Texture texture)
         {
-            Hierarchy = new Dictionary<int, int>();
-            Transforms = new Dictionary<int, Matrix4>();
-            int derp = -1;
-            while (Hierarchy.Count != meshes.Count)
-            {
-                foreach (Mesh m in meshes.Values)
-                {
-                    if (m.parentIndeks == derp)
-                    {
-                        Hierarchy.Add(m.indeks, m.parentIndeks);
-                    }
-                }
-                derp++;
-            }
-            foreach (Mesh m in meshes.Values)
-            {
-                int i = m.indeks;
-                Matrix4 transform = m.transform;
-                Transforms.Add(i, transform);
-            }
+            nodeParent = p;
+            nodeMesh = mesh;
+            nodeTexture = texture;
+
+            if (p != null)
+                p.nodeChildren.Add(this);
         }
-        public void Render(RenderTarget target, ScreenQuad quad, Stopwatch timer, Camera c, Shader shader, Shader postproc, Dictionary<string, Mesh> meshes, Matrix4 transform, Matrix4 toWorld)
-        {          
-            // render scene to render target
-            if (useRenderTarget)
-            {
-                // enable render target
-                target.Bind();
 
-                foreach (Mesh m in meshes.Values)
-                {                   
-                    m.Render(shader, transform, toWorld, m.teksture);
-                }
+        public void Render( Shader shader, Matrix4 transform, Matrix4 toWorld)
+        {
+            Matrix4 preTransform = Matrix4.Identity * nodeMesh.mTransform;
+            transform = preTransform * transform;
+            toWorld = preTransform * toWorld;
 
-                // render quad
-                target.Unbind();
-                quad.Render(postproc, target.GetTextureID());
-            }
-            else
+            if (nodeMesh != null)
             {
-                // render scene directly to the screen
-                foreach (Mesh m in meshes.Values)
-                {                   
-                    m.Render(shader, transform, toWorld, wood);
-                }
+                nodeMesh.Render(shader, transform, toWorld, nodeTexture);
             }
 
+            foreach (SceneGraph child in nodeChildren)
+            {
+                child.Render(shader, transform, toWorld);
+            }
         }
     }
 }
