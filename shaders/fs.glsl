@@ -11,6 +11,7 @@ out vec3 outputColor;
 uniform vec3 ambientColor;
 uniform vec3 lightPos[4];
 uniform vec3 lightCol[4];
+uniform vec3 specCol[4];
 
 // fragment shader
 void main()
@@ -28,7 +29,7 @@ void main()
 		vec3 R = normalize(L - 2 * dot(L, normal.xyz) * normal.xyz);
 		float attenuation = 1.0f/(dist * dist);
 		totalDiffuse = totalDiffuse + lightCol[i] * materialColor * dot(normal.xyz, L);
-		totalSpecular = totalSpecular + lightCol[i] * materialColor * pow(max(0.0, dot(D, R)),20);
+		totalSpecular = totalSpecular + specCol[i] * materialColor * pow(max(0.0, dot(D, R)),20);
 	}
 	outputColor = ambientColor + totalDiffuse + totalSpecular;
 
